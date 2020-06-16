@@ -22,9 +22,9 @@
 
 ## Server database
 
-- Table `users` - contains xx yy zz
-- Table `something` - contains ww qq ss
-- ...
+- Table `Users` - contains: username(PK), hash
+- Table `Vehicles` - contains: license plate, category, brand, model
+- Table `Rentals` - contains: license plate(PK,FK), start date(PK), end date, user(FK)
 
 ## Main React Components
 
@@ -40,8 +40,8 @@
 
 ## Test users
 
-* username, password
-* username, password
-* username, password (frequent customer)
-* username, password
-* username, password (frequent customer)
+* dev, enter
+* enrico, masala
+* luigi, derussis (frequent customer)
+* luca, giorgino
+* voto, trenta? (frequent customer)

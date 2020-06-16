@@ -1,0 +1,12 @@
+ion-icon {
+    font-size: 32px;
+}
+
+.vheight-100 {
+    min-height: 100vh;
+
+}
+
+.below-nav {
+    padding-top: 5rem;
+}
