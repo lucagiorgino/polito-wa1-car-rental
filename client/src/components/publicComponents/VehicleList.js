@@ -1,16 +1,10 @@
-import React,{ useEffect } from 'react' ;
+import React from 'react' ;
 import Table from 'react-bootstrap/Table';
 
 const VehicleLIst = (props) => {
 
-  let {vehicles, getVehicles} = props;
-/*
-  //same as componentDidMount()
-  useEffect(() => {    
-    console.log("vehicles")
-    getVehicles();
-  },[]);
-   */
+  let {vehicles} = props;
+
   return  (<>
     {vehicles && 
     <Table striped bordered hover size="sm">

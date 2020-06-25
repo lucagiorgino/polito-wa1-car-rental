@@ -1,34 +1,60 @@
-import React from 'react' ;
-import Navbar from 'react-bootstrap/Navbar';
-import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
-import Nav from 'react-bootstrap/Nav';
-
+import React, { useContext } from 'react' ;
+import { Navbar, Nav,Row } from "react-bootstrap";
 import { NavLink } from 'react-router-dom' ;
+import {AuthContext} from '../api/AuthContext.js';
 
-const logoIcon = <ion-icon name="car-outline"></ion-icon>;
-const loggedIcon = <ion-icon  name="person-circle-outline"></ion-icon>;
+const logoIcon = <ion-icon className="mt-2" name="car-outline"></ion-icon>;
+// const loggedIcon = <ion-icon  name="person-circle-outline"></ion-icon>;
 
 // onClick={props.showSidebar}/> 
 
-const Header = (props) => {
+function Header(props){
 
-    return (
-    <Navbar bg="light" variant="light" expand="sm" fixed="top">
-      <NavLink to='/'> <Navbar.Brand className="d-flex flex-row align-items-center">
-        {logoIcon}
-        <h4 className="mt-2 ml-2">Car Rental</h4>
-      </Navbar.Brand> </NavLink>
-      <Form inline className="my-2 my-lg-0 mx-auto d-none d-sm-block"> 
-        <FormControl type="text" placeholder="Search" className="mr-sm-2" aria-label="Search"/>
-      </Form>
-      <Nav className="float-right">
-        <NavLink to='/login'>
-          <ion-icon  name="person-circle-outline"  onClick={()=> props.userLogout()}></ion-icon>            
-        </NavLink>       
-      </Nav> 
-    </Navbar>
-    );
+  const authContext = useContext(AuthContext); 
+
+  return (
+  <Navbar bg="light" variant="light" expand="sm" fixed="top">
+        
+    <Navbar.Brand as={NavLink} to='/' className="d-flex flex-row align-items-center">
+      {logoIcon}
+      <h4 className="ml-2 mt-2">Car Rental</h4>
+    </Navbar.Brand>
+    {authContext.authUser ? 
+      <>
+        <Nav className="mr-auto mt-1">
+            <Nav.Link as={NavLink} to="/protected/history">Past and Active rentals</Nav.Link> 
+            <Nav.Link as={NavLink} to="/protected/future">Future reservations</Nav.Link> 
+        </Nav>
+        <Nav className="float-right mr-2">   
+            <Nav.Link >
+              <Row className="mr-4">
+                <h6 className="mr-2 mt-2">{authContext.authUser.username}</h6>  
+                <ion-icon name="person-circle-outline"></ion-icon>  
+              </Row>
+            </Nav.Link>             
+            <Nav.Link onClick={() => authContext.logoutUser()}>
+              <Row>          
+                <ion-icon name="log-out-outline" ></ion-icon>    
+                <h6 className="ml-2 mt-2">Logout</h6>   
+              </Row>      
+            </Nav.Link>            
+        </Nav> 
+      </> : <>
+        <Nav className="mr-auto mt-1">
+          <Nav.Link as={NavLink} to={{pathname: "/public/vehicles", state: "desiredState"}} >View our vehicles!</Nav.Link> 
+        </Nav>
+        <Nav className="float-right mr-2">   
+            <Nav.Link as={NavLink} to="/login"> 
+              <Row>          
+                <ion-icon name="log-in-outline" ></ion-icon>  
+                <h6 className="ml-2 mt-2">Login</h6>   
+              </Row>
+            </Nav.Link>            
+        </Nav> 
+      </>
+    }
+  </Navbar>
+  );
 }
 
 export default Header;

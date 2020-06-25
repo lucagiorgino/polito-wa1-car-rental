@@ -23,7 +23,7 @@ async function userLogin(username, password) {
     });
 }
 
-async function userLogout(username, password) {
+async function userLogout() {
     return new Promise((resolve, reject) => {
         fetch(baseURL + '/logout', {
             method: 'POST',
@@ -41,5 +41,17 @@ async function userLogout(username, password) {
 }
 
 
-const authAPI = {  userLogin, userLogout} ;
+async function isAuthenticated(){
+    let url = "/user";
+    const response = await fetch(baseURL + url);
+    const userJson = await response.json();
+    if(response.ok){
+        return userJson;
+    } else {
+        let err = {status: response.status, errObj:userJson};
+        throw err;  // An object with the error coming from the server
+    }
+}
+
+const authAPI = {  userLogin, userLogout, isAuthenticated} ;
 export default authAPI;
