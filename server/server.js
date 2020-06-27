@@ -13,7 +13,7 @@ const cookieParser = require('cookie-parser');
 const authErrorObj = { errors: [{  'param': 'Server', 'msg': 'Authorization error, cookie expired' }] };
 const jwtSecretContent = require('./secrets.js');
 const jwtSecret = jwtSecretContent.jwtSecret;
-const expireTime = 60; //seconds
+const expireTime = 300; //seconds
 
 const BASEURL = '/api' ;
 const app = new express();
