@@ -58,17 +58,17 @@
 
 ## Main React Components
 
-- `LoginPage` (in `LoginPage.js`): component purpose and main functionality
-- `Header` (in `LoginPage.js`): component purpose and main functionality
-### Protected components
-- `ProtectedPages` (in `ProtectedPages.js`): component purpose and main functionality
-- `PaymentPage` (in `PaymentPage.js`): component purpose and main functionality
-- `ConfigurationFilter` (in `ConfigurationFilter.js`): component purpose and main functionality
-- `RentalList` (in `RentalList.js`): component purpose and main functionality
-### Public components
-- `PublicPage` (in `PublicPage.js`): component purpose and main functionality
-- `SideFilter` (in `SideFilter.js`): component purpose and main functionality
-- `VehicleList` (in `VehicleList.js`): component purpose and main functionality
+  - `LoginPage` (in `LoginPage.js`): component purpose and main functionality
+  - `Header` (in `LoginPage.js`): component purpose and main functionality
+- #### Protected components
+  - `ProtectedPages` (in `ProtectedPages.js`): component purpose and main functionality
+  - `PaymentPage` (in `PaymentPage.js`): component purpose and main functionality
+  - `ConfigurationFilter` (in `ConfigurationFilter.js`): component purpose and main functionality
+  - `RentalList` (in `RentalList.js`): component purpose and main functionality
+- #### Public components
+  - `PublicPage` (in `PublicPage.js`): component purpose and main functionality
+  - `SideFilter` (in `SideFilter.js`): component purpose and main functionality
+  - `VehicleList` (in `VehicleList.js`): component purpose and main functionality
 
 (only _main_ components, minor ones may be skipped)
 
