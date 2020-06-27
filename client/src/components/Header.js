@@ -4,9 +4,6 @@ import { NavLink } from 'react-router-dom' ;
 import {AuthContext} from '../api/AuthContext.js';
 
 const logoIcon = <ion-icon className="mt-2" name="car-outline"></ion-icon>;
-// const loggedIcon = <ion-icon  name="person-circle-outline"></ion-icon>;
-
-// onClick={props.showSidebar}/> 
 
 function Header(props){
 

@@ -36,7 +36,7 @@ class PublicPage extends React.Component {
         const brandsFilter = [];        
         const category = ['A','B','C','D','E'];
 
-        search.map ((f) => {
+        search.forEach ((f) => {
             f = f.replace("%20"," "); // evenutale spazio se si proviene da un link
             if( category.includes(f) ){
                 categoriesFilter.push(f);

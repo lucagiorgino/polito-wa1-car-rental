@@ -1,5 +1,5 @@
 import React from 'react' ;
-import {Button,Form,Col,Row,Badge,Spinner,OverlayTrigger,Tooltip} from 'react-bootstrap';
+import {Button,Form,Col,Row,Badge,Spinner} from 'react-bootstrap';
 import {Redirect} from 'react-router-dom';
 import moment from 'moment';
 import fetchAPI from '../../api/fetchAPI.js';
@@ -21,7 +21,7 @@ class ConfigurationFilter extends React.Component {
 		if (!form.checkValidity()) {
 			form.reportValidity();
 			this.setState({loading : false,submitted: false}); 
-		}else{
+		} else {
 			
 			fetchAPI.checkPrice({startDate: this.state.startDate,endDate: this.state.endDate, 
 				category: this.state.category, km: this.state.km, age: this.state.age, 
@@ -29,38 +29,40 @@ class ConfigurationFilter extends React.Component {
 				clientCalculatedPrice: this.state.price})
 				.then(() => { 
 					this.props.updateDesiredRental(new DesiredRental(this.state.startDate,this.state.endDate, this.state.category,this.state.price));
-					this.props.setPayment()
 					this.setState({loading : false,submitted: true}); 
 				})
 				.catch((errorObj) => {
 					console.log(errorObj);
 					this.setState({loading : false,submitted: false}); 
-					// this.handleErrors(errorObj);
+					this.props.errorHandler(errorObj);
 				});		
 		} 
     }
 
-    updateField = (name, value) => {
+	updateField = (name, value) => {
 		this.setState({[name]: value}, () => {
-			this.updateAvailableNumber(); // cascade updating 			
+			this.updateAvailableNumber(); // cascade updating, after setState finished 			
 		}); 
 	}
-	
+
 	updateAvailableNumber = () => {			
 		if(this.state.category && this.state.startDate && this.state.endDate){
-			fetchAPI.getAvailableVehicles(this.state.category,this.state.startDate,this.state.endDate)  
-			.then((availableVehicles) => { 
-				if(availableVehicles.length === 0)
-					this.setState({availableNumber: availableVehicles.length, price: 'not calculable', disabled: true }); 
-				else
-					this.setState({availableNumber: availableVehicles.length, disabled: false }, () => this.updatePrice() ); 
 
-			})
-			.catch((errorObj) => {
-				this.setState({availableNumber: 'not calculable'});
-				console.log(errorObj)
-				// this.handleErrors(errorObj);
-			});
+			if(moment(this.state.endDate).isBefore(moment(this.state.startDate)))
+				this.setState({availableNumber: 'not calculable', price: 'not calculable' }); 
+			else
+				fetchAPI.getAvailableVehicles(this.state.category,this.state.startDate,this.state.endDate)  
+				.then((availableVehicles) => { 
+					if(availableVehicles.length === 0)
+						this.setState({availableNumber: availableVehicles.length, price: 'not calculable', disabled: true }); 
+					else
+						this.setState({availableNumber: availableVehicles.length, disabled: false }, () => this.updatePrice() );  // cascade updating, after setState finished
+				})
+				.catch((errorObj) => {
+					this.setState({availableNumber: 'not calculable'});
+					console.log(errorObj)
+					this.props.errorHandler(errorObj);
+				});
 		}
 	}
 
@@ -73,10 +75,10 @@ class ConfigurationFilter extends React.Component {
 					lessThan10 = true;
 			})
 			.catch((errorObj) => {
-				// this.handleErrors(errorObj);
+				this.props.errorHandler(errorObj);
 			});
 	
-		if( this.props.rentals.filter( (r) => moment(r.endDate).isBefore(moment())).length >= 3 ){
+		if( this.props.rentals.filter( (r) => moment(r.endDate).isBefore(moment()) ).length >= 3 ){
 			frequentCustomer = true;
 		}
 		let numberOfDay = moment(this.state.endDate).diff(moment(this.state.startDate),'days')+1;
@@ -87,7 +89,7 @@ class ConfigurationFilter extends React.Component {
 
 	render() {   
 		if (this.state.submitted)
-            return <Redirect to={{pathname: "/protected/payment",state: { rental: "ciao" } }} />;
+			return <Redirect to="/protected/payment" />;
 		return  (<>
 		
 		<Form method="POST" onSubmit={(event) => this.handleSubmit(event)} >

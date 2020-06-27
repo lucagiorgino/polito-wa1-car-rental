@@ -1,5 +1,5 @@
 import React from 'react' ;
-import {Col,Row,Form,Button,Badge} from 'react-bootstrap';
+import {Col,Row,Form,Button,Badge, Alert} from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import fetchAPI from '../../api/fetchAPI.js';
 import paymentAPI from '../../api/paymentAPI.js';
@@ -8,7 +8,8 @@ class PaymentPage extends React.Component {
   
   constructor(props) {
     super(props);    
-    this.state = {submitted:false,fullName:"",cardNumber:"",CVVcode:""};
+    this.state = {submitted:false,fullName:"",cardNumber:"",CVVcode:"",error:null};
+    this.props.hideHeader();
   }
 
   updateField = (name, value) => {
@@ -17,26 +18,26 @@ class PaymentPage extends React.Component {
 
   handlePayment = async (event) => {
     event.preventDefault();
-    const form = event.currentTarget;
     
-    if (!form.checkValidity()) {
-      form.reportValidity();
-    } else {
-
-      try{
-        await paymentAPI.pay({fullName: this.state.fullName,cardNumber: this.state.cardNumber,CVVcode: this.state.CVVcode});
-        await fetchAPI.addRental(this.props.desiredRental);
-      }catch(err){
-        // handle error
-        console.log(err)
-      }
-      this.props.setPayment();
+    try{
+      await paymentAPI.pay({fullName: this.state.fullName,cardNumber: this.state.cardNumber,CVVcode: this.state.CVVcode, price: this.props.desiredRental.price});
+      await fetchAPI.addRental(this.props.desiredRental);
+      this.props.hideHeader();
       this.setState({submitted: true});
-    }
+    }catch(err){
+      // handle error
+      if (err.status && err.status === 401){
+        this.props.hideHeader();
+        this.props.errorAuthHandler(err);
+      } else {
+        console.log(err);
+        this.setState({error: err.errObj.errors[0] });
+      }
+    } 
   }
 
   handleClosing = () => {
-    this.props.setPayment();
+    this.props.hideHeader();
     this.setState({submitted: true});
   }
 
@@ -65,7 +66,7 @@ class PaymentPage extends React.Component {
                 <Form.Control minLength="3" maxLength="3" size="3" type="text" name="CVVcode" value={this.state.CVVcode} onChange={(ev) => this.updateField(ev.target.name, ev.target.value)} required/>
             </Form.Group>
         </Form.Row>
-        <Row>
+        <Row className="ml-1">
           <Col sm={8}>
             <Row className="mt-2">
               <h4>Price:</h4><h4><Badge className="ml-2" variant="success">{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(this.props.desiredRental.price)}</Badge></h4>   
@@ -77,10 +78,9 @@ class PaymentPage extends React.Component {
               <Button variant="secondary" onClick={()=> this.handleClosing()}>Close</Button>
             </Row>            
           </Col>
-        </Row>   
-        
+        </Row>    
     </Form >
-    
+    {this.state.error && <Alert className="my-2" variant= "danger">{this.state.error.msg}</Alert>}
     </>);       
   }
 }

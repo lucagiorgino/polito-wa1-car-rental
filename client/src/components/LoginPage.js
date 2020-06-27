@@ -1,9 +1,5 @@
 import React from 'react' ;
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Alert from'react-bootstrap/Alert';
+import {Button,Form,Row,Col,Alert} from 'react-bootstrap/';
 import {AuthContext} from '../api/AuthContext.js';
 
 class LoginPage extends React.Component {
@@ -18,8 +14,6 @@ class LoginPage extends React.Component {
         onLogin(this.state.username,this.state.password);
         // this.setState({submitted : true});      
     }
-
-    // add updateField
 
     updateField = (name, value) => {
         this.setState({[name]: value});
@@ -63,61 +57,4 @@ class LoginPage extends React.Component {
     }
 }
 
-
-
 export default LoginPage;
-
-/*
-
-
-
-class LoginForm extends React.Component {
-    
-
-      
-  
-    render() {
-        if (this.state.submitted)
-            return <Redirect to='/' />;
-        return(
-            <AuthContext.Consumer>
-                {(context) => (
-                <>
-                <Container fluid>
-                    <Row>
-                        <Col>
-                           
-
-<Form method="POST"}>
-<Form.Group controlId="username">
-    <Form.Label>E-mail</Form.Label>
-    <Form.Control type="email" name="email" placeholder="E-mail" value = {this.state.username} 
-    onChange={(ev) => this.onChangeUsername(ev)} required autoFocus/>
-</Form.Group>
-
-<Form.Group controlId="password">
-    <Form.Label>Password</Form.Label>
-    <Form.Control type="password" name="password" placeholder="Password" value = {this.state.password} 
-    onChange={(ev) => this.onChangePassword(ev)} required/>
-</Form.Group>
-
-<Button variant="primary" type="submit">Login</Button>
-
-                            </Form>
-
-                            
-                        </Col>
-                    </Row>
-                </Container>
-                </>
-                )}
-            </AuthContext.Consumer>
-
-        );
-    }
-
-
-}
-
-
-*/

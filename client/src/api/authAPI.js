@@ -10,16 +10,14 @@ async function userLogin(username, password) {
             body: JSON.stringify({username: username, password: password}),
         }).then((response) => {
             if (response.ok) {
-                response.json().then((user) => {
-                    resolve(user);
-                });
+                response.json().then((user) => resolve(user));
             } else {
                 // analyze the cause of error               
                 response.json()
-                    .then((obj) => { reject(obj); }) // error msg in the response body
-                    .catch((err) => { reject({ errors: [{ param: "Application", msg: "Cannot parse server response" }] }) }); // something else
+                .then((obj) =>  reject({status: response.status, errObj: obj}) ) // error msg in the response body
+                .catch((err) =>  reject({status: response.status, errObj: {errors: [{ param: "Application", msg: "Cannot parse server response" }]}}) ); // something else
             }
-        }).catch((err) => { reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] }) }); // connection errors
+        }).catch((err) => reject( { errObj: {errors: [{ param: "Server", msg: "Cannot communicate" }]}} )); // connection errors
     });
 }
 
@@ -33,10 +31,11 @@ async function userLogout() {
             } else {
                 // analyze the cause of error
                 response.json()
-                    .then((obj) => { reject(obj); }) // error msg in the response body
-                    .catch((err) => { reject({ errors: [{ param: "Application", msg: "Cannot parse server response" }] }) }); // something else
+                .then((obj) =>  reject({status: response.status, errObj: obj}) ) // error msg in the response body
+                .catch((err) =>  reject({status: response.status, errObj: {errors: [{ param: "Application", msg: "Cannot parse server response" }]}}) ); // something else
             }
-        });
+        }).catch((err) =>  reject( { errObj: {errors: [{ param: "Server", msg: "Cannot communicate" }]}} )); // connection errors
+
     });
 }
 

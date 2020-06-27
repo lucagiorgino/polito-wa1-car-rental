@@ -8,16 +8,17 @@ import PaymentPage from './PaymentPage.js';
 import fetchAPI from '../../api/fetchAPI.js';
 import moment from 'moment';
 
-function ProtectedPage(props) {
+function ProtectedPages(props) {
     
     const authContext = useContext(AuthContext);
     const [rentals,setRentals] = useState([]);
     const [desiredRental,setDesiredRental] = useState(null);
 
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+                                                  
+    const handler  = authContext.errorAuthHandler; // https://stackoverflow.com/questions/57289668/warning-for-exhaustive-deps-keeps-asking-for-the-full-props-object-instead-o
 
     useEffect( () => {
         // warning solution from https://stackoverflow.com/questions/53949393/cant-perform-a-react-state-update-on-an-unmounted-component
@@ -26,33 +27,29 @@ function ProtectedPage(props) {
         .then((r) => { 
             if (isMounted) setRentals(r);
         })
-        .catch((errorObj) => {
-            // this.handleErrors(errorObj);
+        .catch((err) => {
+           console.log(err);
+           handler(err);
         }); 
-        return () => { isMounted = false }; // use effect cleanup to set flag false, if unmounted
-        
-    }, []);
+        return () => { isMounted = false }; // use effect cleanup to set flag false, if unmounted   
+    }, [handler]);
+    
     
     const updateDesiredRental = (desiredRental) => {
         setDesiredRental(desiredRental);
     }
   
-    const deleteRental = (rental) => {
-
-        fetchAPI.deleteRental(rental)
-        .then( () => {
-
-            fetchAPI.getRentalsForUser()
-            .then((r) => { 
-                setRentals(r);
-            })
+    const deleteRental = async (rental) => {
+        try{
+            await fetchAPI.deleteRental(rental);
+            let r = await fetchAPI.getRentalsForUser();
+            setRentals(r);
             handleShow();
-        })
-        .catch((errorObj) => {
-
-        });   
-  
+        }catch(err){
+            authContext.errorAuthHandler(err);
+        }
     };
+
 
     return (<>
         {!authContext.authUser && <Redirect to='/login'/>}
@@ -65,14 +62,21 @@ function ProtectedPage(props) {
                         <h1 className="mx-3">Rent a car!</h1>
                         <ion-icon name="key-outline"></ion-icon>
                     </Row>            
-                    <ConfigurationFilter updateDesiredRental={updateDesiredRental} setPayment={props.setPayment} rentals={rentals}/> 
+                    <ConfigurationFilter errorHandler={authContext.errorAuthHandler} updateDesiredRental={updateDesiredRental} rentals={rentals}/> 
                 </Col> 
             </Route>
             <Route path="/protected/payment">
                 <Col sm={3} lg={4}></Col>     
                 <Col sm={6} lg={4} >
-                    <PaymentPage desiredRental={desiredRental} deleteRental={deleteRental} setPayment={props.setPayment} /> 
+                    <PaymentPage errorAuthHandler={authContext.errorAuthHandler} desiredRental={desiredRental} deleteRental={deleteRental} hideHeader={props.hideHeader} /> 
                 </Col>      
+            </Route>
+            <Route path="/protected/history">
+                <Col sm={2} lg={3}></Col>     
+                <Col sm={10} lg={6}>
+                    <h2 className="my-3">Your past and active rentals!</h2>
+                    <RentalList rentals={rentals.filter( (r) => !moment().isBefore(moment(r.startDate)))} deleteRental={deleteRental}/> 
+                </Col>
             </Route>
             <Route path="/protected/future">
                 <Col sm={2} lg={3}></Col>     
@@ -93,19 +97,8 @@ function ProtectedPage(props) {
                     </Modal.Footer>
                 </Modal>
             </Route>
-            <Route path="/protected/history">
-                <Col sm={2} lg={3}></Col>     
-                <Col sm={10} lg={6}>
-                    <h2 className="my-3">Your past and active rentals!</h2>
-                    <RentalList rentals={rentals.filter( (r) => !moment().isBefore(moment(r.startDate)))} deleteRental={deleteRental}/> 
-                </Col>
-            </Route>
-        </Switch>
-            
-        
-        
-        
-    </>);
-    
+        </Switch>        
+    </>);   
 }
-export default ProtectedPage;
+
+export default ProtectedPages;

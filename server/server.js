@@ -4,16 +4,16 @@ const userDao = require('./user_dao.js');
 const vehicleDao = require('./vehicle_dao.js');
 const moment = require('moment');
 const priceCalculator = require('./priceCalculatorServer.js'); 
-const { check, oneOf, validationResult } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 
 const jwt = require('express-jwt');
 const jsonwebtoken = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
-const authErrorObj = { errors: [{  'param': 'Server', 'msg': 'Authorization error' }] };
+const authErrorObj = { errors: [{  'param': 'Server', 'msg': 'Authorization error, cookie expired' }] };
 const jwtSecretContent = require('./secrets.js');
 const jwtSecret = jwtSecretContent.jwtSecret;
-const expireTime = 600; //seconds
+const expireTime = 60; //seconds
 
 const BASEURL = '/api' ;
 const app = new express();
@@ -233,9 +233,9 @@ app.post(BASEURL + '/rentals', async (req,res) => {
 // POST /pay
 // regex from https://stackoverflow.com/questions/3073850/javascript-regex-test-peoples-name/29037473
 app.post(BASEURL + '/pay', [ 
-    check('fullName').exists().matches(/^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/).withMessage('must be 2 words'),
-    check('CVVcode').exists().isNumeric().isLength({ min: 3, max:3  }).withMessage('must be 3 digits long'),
-    check('cardNumber').exists().isNumeric().isLength({ min: 16, max:16  }).withMessage('must be 16 digits long'), 
+    check('fullName').exists().matches(/^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/).withMessage('Full name must be 2 separated words (Example: Mario Rossi)'),
+    check('CVVcode').exists().isNumeric().withMessage('CVV must contains only digits').isLength({ min: 3, max:3  }).withMessage('CVV must be 3 digits long'),
+    check('cardNumber').exists().isNumeric().withMessage('Card number must contains only digits').isLength({ min: 16, max:16  }).withMessage('Card number must be 16 digits long'), 
     ], async (req,res) => {
         console.log(req.body)
         // https://express-validator.github.io/docs/validation-result-api.html

@@ -3,9 +3,12 @@
 
 ## React client application routes
 
-- Route `/`: page content and purpose
-- Route `/something/:param`: page content and purpose, param specification
-- ...
+- Route `/`: redirect to login or to protected page (if authenticated)
+- Route `/login`: page to handle the login 
+- Route `/public/vehicles`: public page
+- Route `/protected/rent`: page to choose 
+- Route `/protected/history`: this page show the user rentals (past and active)
+- Route `/protected/future`:  this page show the user future reservations
 
 ## REST API server
 
@@ -23,13 +26,14 @@
 ## Server database
 
 - Table `Users` - contains: username(PK), hash
-- Table `Vehicles` - contains: license plate, category, brand, model
+- Table `Vehicles` - contains: license plate(PK), category, brand, model
 - Table `Rentals` - contains: license plate(PK,FK), start date(PK), end date, user(FK)
 
 ## Main React Components
 
-- `ListOfSomething` (in `List.js`): component purpose and main functionality
-- `GreatButton` (in `GreatButton.js`): component purpose and main functionality
+-
+- `LoginPage` (in `LoginPage.js`): component purpose and main functionality
+- `ProtectedPage` (in `ProtectedPage.js`): component purpose and main functionality
 - ...
 
 (only _main_ components, minor ones may be skipped)
