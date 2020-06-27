@@ -130,8 +130,10 @@ app.get(BASEURL + '/vehicles/available', (req, res) => {
         .catch((err) => {res.status(500).json({errors: [{'msg': err}]});}); 
 });
 
-//GET /vehicles/numeber?category=?
+//GET /vehicles/number?category=?
 app.get(BASEURL + '/vehicles/number', (req, res) => {
+    if(!req.query.category)
+        res.status(400).json({errors: [{'msg': "missing some parameters"}]});
     vehicleDao.getNCategoryVehicles(req.query.category)
         .then((n) => {res.json(n)})
         .catch((err) => {res.status(500).json({errors: [{'msg': err}]});});
