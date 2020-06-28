@@ -77,7 +77,6 @@ class App extends React.Component {
   }
   
   render() { 
-    // console.log()
     // compose value prop as object with user object and logout method
     const value = {
       authUser: this.state.authUser,
