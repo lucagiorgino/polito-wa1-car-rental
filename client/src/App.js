@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Route, Switch,withRouter, Redirect } from 'react-router-dom';
-import {Container,Row} from 'react-bootstrap';
+import {Container,Row,Spinner} from 'react-bootstrap';
 
 import Header from './components/Header.js';
 import LoginPage from './components/LoginPage.js';
@@ -16,7 +16,7 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);    
-    this.state = {loading: false, openMobileMenu: false, isLoggedIn: false, user:'' };
+    this.state = {loading: false, authUser: null, authErr: null };
   }
 
   componentDidMount() {
@@ -25,18 +25,22 @@ class App extends React.Component {
 
   isAuthenticated = () => {
     //check if the user is authenticated
+    this.setState({loading: true});
     authAPI.isAuthenticated().then(
       (user) => {
         console.log("Already logged in")
-        this.setState({authUser: user});
+        this.setState({loading:false,authUser: user});
       }
     ).catch((err) => { 
       // this.setState({authUser: null});
       // this.setState({authErr: err.errObj.errors[0]});   // on Reload will appear message   
-      // to stay on public page
-      if(this.props.location.pathname.search("protected") !== -1){
-        this.props.history.push("/login");
-      }
+
+      this.setState({loading:false},() => {
+        // to stay on public page
+        if(this.props.location.pathname.search("protected") !== -1){
+          this.props.history.push("/login");
+        }
+      });    
     });
   }
 
@@ -83,8 +87,15 @@ class App extends React.Component {
       errorAuthHandler: this.handleUnauthorizedErrors 
     }
 
-    return (
-    <AuthContext.Provider value={value}>
+    return (<>
+    { this.state.loading ? 
+      <Container>
+        <Row className="vheight-100 d-flex align-content-center justify-content-md-center">
+          <Spinner variant="primary" animation='border' role="status" aria-hidden="true"/> 
+        </Row>
+      </Container>
+      : 
+      <AuthContext.Provider value={value}>
       {this.props.location.pathname !== '/protected/payment' && <Header showSidebar={this.showSidebar} />}
       <Container fluid>
         <Row className="vheight-100 below-nav ">
@@ -111,7 +122,9 @@ class App extends React.Component {
         </Row> 
       </Container>
     </AuthContext.Provider>
-    );
+
+    }
+    </>);
   } }
 
 export default withRouter(App);

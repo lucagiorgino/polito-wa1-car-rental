@@ -59,7 +59,7 @@
 - Table `Rentals` - contains: license plate(PK,FK), start date(PK), end date, user(FK)
 
 ## Main React Components
-
+  - `App` (in `App.js`): main component to switch between routes('/','/public/vehicles','/protected'). It provides the Context for authentication.
   - `LoginPage` (in `LoginPage.js`): handle the login process
   - `Header` (in `Header.js`): navbar (it changes between public page and protected pages)
 - #### Protected components (user must be authenticated)
