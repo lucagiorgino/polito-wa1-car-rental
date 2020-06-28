@@ -6,13 +6,12 @@ class LoginPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {username: '', password: '', submitted: false};
+        this.state = {username: '', password: ''};
     }
 
     handleSubmit = (event,onLogin) => {
         event.preventDefault();
-        onLogin(this.state.username,this.state.password);
-        // this.setState({submitted : true});      
+        onLogin(this.state.username,this.state.password);             
     }
 
     updateField = (name, value) => {
@@ -20,8 +19,6 @@ class LoginPage extends React.Component {
     }
 
     render(){
-        // if (this.state.submitted)
-        //    return <Redirect to='/protected' />;
         return <AuthContext.Consumer>{(context) => (
             <>
             <Col sm={3} lg={4}></Col>     

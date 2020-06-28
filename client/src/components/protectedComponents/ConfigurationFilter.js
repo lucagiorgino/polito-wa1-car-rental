@@ -48,7 +48,7 @@ class ConfigurationFilter extends React.Component {
 	updateAvailableNumber = () => {			
 		if(this.state.category && this.state.startDate && this.state.endDate){
 
-			if(moment(this.state.endDate).isBefore(moment(this.state.startDate)))
+			if(moment(this.state.endDate,"YYYY-MM-DD").isBefore(moment(this.state.startDate,"YYYY-MM-DD")))
 				this.setState({availableNumber: 'not calculable', price: 'not calculable' }); 
 			else
 				fetchAPI.getAvailableVehicles(this.state.category,this.state.startDate,this.state.endDate)  
@@ -78,10 +78,10 @@ class ConfigurationFilter extends React.Component {
 				this.props.errorHandler(errorObj);
 			});
 	
-		if( this.props.rentals.filter( (r) => moment(r.endDate).isBefore(moment()) ).length >= 3 ){
+		if( this.props.rentals.filter( (r) => moment(r.endDate,"YYYY-MM-DD").isBefore(moment()) ).length >= 3 ){
 			frequentCustomer = true;
 		}
-		let numberOfDay = moment(this.state.endDate).diff(moment(this.state.startDate),'days')+1;
+		let numberOfDay = moment(this.state.endDate,"YYYY-MM-DD").diff(moment(this.state.startDate,"YYYY-MM-DD"),'days')+1;
 		let price = calculatePrice(lessThan10,numberOfDay,this.state.category,this.state.km,this.state.age,this.state.extraDrivers,this.state.extraInsurance,frequentCustomer);
 		this.setState({price: price})
 	}

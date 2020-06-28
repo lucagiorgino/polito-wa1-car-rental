@@ -5,10 +5,10 @@
 
 - Route `/`: redirect to login or to protected page (if authenticated)
 - Route `/login`: page to handle the login 
-- Route `/public/vehicles`: public page
-- Route `/protected/rent`: page to choose 
-- Route `/protected/history`: this page show the user rentals (past and active)
-- Route `/protected/future`:  this page show the user future reservations
+- Route `/public/vehicles`: public page (list of vehicles)
+- Route `/protected/rent`: interactive configuration page 
+- Route `/protected/history`: this page shows rentals (past and active) of the logged user
+- Route `/protected/future`:  this page shows future reservations of the logged user
 - Route `/protected/payment`:  in this page user can pay for the desired rental
 
 ## REST API server
@@ -21,18 +21,20 @@
   - request parameters (none)
   - response body content (username)
 
+
 - GET `/api/vehicles`
   - request parameters (optionally categories and/or brands)
   - response body content (array of vehicles)
 - GET `/api/vehicles/brands`
   - request parameters (none)
-  - response body content (array of brands)  
+  - response body content (array of brands)   
 - GET `/api/vehicles/available`
   - request parameters (startDate,endDate,category)
   - response body content (array of vehicles)
 - GET `/api/vehicles/number`
   - request parameters (category)
   - response body content (number of vehicles for that category)
+
 
 - GET `/api/rentals`
   - request parameters (none)
@@ -58,17 +60,17 @@
 
 ## Main React Components
 
-  - `LoginPage` (in `LoginPage.js`): component purpose and main functionality
-  - `Header` (in `LoginPage.js`): component purpose and main functionality
-- #### Protected components
-  - `ProtectedPages` (in `ProtectedPages.js`): component purpose and main functionality
-  - `PaymentPage` (in `PaymentPage.js`): component purpose and main functionality
-  - `ConfigurationFilter` (in `ConfigurationFilter.js`): component purpose and main functionality
-  - `RentalList` (in `RentalList.js`): component purpose and main functionality
+  - `LoginPage` (in `LoginPage.js`): handle the login process
+  - `Header` (in `Header.js`): navbar (it changes between public page and protected pages)
+- #### Protected components (user must be authenticated)
+  - `ProtectedPages` (in `ProtectedPages.js`): this component cointains all routes that require autentication and redirect to the right one
+  - `PaymentPage` (in `PaymentPage.js`): component to handle the payment
+  - `ConfigurationFilter` (in `ConfigurationFilter.js`): configurator component, user can set parameters for desired rental
+  - `RentalList` (in `RentalList.js`): list of user's rentals
 - #### Public components
-  - `PublicPage` (in `PublicPage.js`): component purpose and main functionality
-  - `SideFilter` (in `SideFilter.js`): component purpose and main functionality
-  - `VehicleList` (in `VehicleList.js`): component purpose and main functionality
+  - `PublicPage` (in `PublicPage.js`): it contains SideFilter and VehicleList
+  - `SideFilter` (in `SideFilter.js`): it allows user to filter the vehicle list using checkbox
+  - `VehicleList` (in `VehicleList.js`): table of vehicles (user can sort table by category,brand or model)
 
 (only _main_ components, minor ones may be skipped)
 

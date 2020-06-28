@@ -68,7 +68,7 @@ function ProtectedPages(props) {
             <Route path="/protected/payment">
                 <Col sm={3} lg={4}></Col>     
                 <Col sm={6} lg={4} >
-                    <PaymentPage errorAuthHandler={authContext.errorAuthHandler} desiredRental={desiredRental} deleteRental={deleteRental} hideHeader={props.hideHeader} /> 
+                    <PaymentPage errorAuthHandler={authContext.errorAuthHandler} desiredRental={desiredRental} deleteRental={deleteRental}/> 
                 </Col>      
             </Route>
             <Route path="/protected/history">

@@ -45,16 +45,19 @@ class PublicPage extends React.Component {
             }
         });   
         
-        this.setState( { categoriesFilter: categoriesFilter, brandsFilter: brandsFilter});
-
-        // unica chiamata al server
-        fetchAPI.getVehicles(categoriesFilter,brandsFilter) 
-        .then((returnValue) => {          
-            this.setState({vehicles: returnValue.vehicles});
-        })
-        .catch((errorObj) => {
-        // this.handleErrors(errorObj);
+        this.setState( { categoriesFilter: categoriesFilter, brandsFilter: brandsFilter}, () => {
+            // unica chiamata al server dopo aver completato la setState
+            fetchAPI.getVehicles(categoriesFilter,brandsFilter) 
+            .then((returnValue) => {          
+                this.setState({vehicles: returnValue.vehicles});
+            })
+            .catch((errorObj) => {
+                console.log(errorObj);
+            // this.handleErrors(errorObj);
+            });
         });
+
+        
     }
     
 
@@ -80,10 +83,18 @@ class PublicPage extends React.Component {
                 this.setState({vehicles: returnValue.vehicles}, () => this.props.history.push("/public"+returnValue.url)  );              
             })
             .catch((errorObj) => {
+                console.log(errorObj);
                 // this.handleErrors(errorObj);
             });
         });     
     }
+
+    sortVehicles = (option) => {
+        let sortedArray = this.state.vehicles;
+        sortedArray.sort( (a,b) => a[option] > b[option] );
+        this.setState({vehicles: sortedArray})
+    }
+
 
     componentDidUpdate() {
         // nel caso in cui si prema il link nella navbar sulla stessa route e le checkbox rimangano selezionate
@@ -100,7 +111,7 @@ class PublicPage extends React.Component {
             </Col>                                          
             <Col sm={6}>
                 <h2>Vehicles</h2>
-                <VehicleLIst vehicles={this.state.vehicles}/>               
+                <VehicleLIst vehicles={this.state.vehicles} sortVehicles={this.sortVehicles} />               
             </Col>
         </>);
     } 

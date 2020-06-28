@@ -16,7 +16,7 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);    
-    this.state = {loading: false, openMobileMenu: false, isLoggedIn: false, user:'', payment: false };
+    this.state = {loading: false, openMobileMenu: false, isLoggedIn: false, user:'' };
   }
 
   componentDidMount() {
@@ -62,11 +62,6 @@ class App extends React.Component {
       }
     );
   }
-
-  // hide Header for payment page 
-  hideHeader = () => {
-    this.setState({payment: !this.state.payment});
-  }
   
   handleUnauthorizedErrors = (err) => {
     if (err) {
@@ -78,6 +73,7 @@ class App extends React.Component {
   }
   
   render() { 
+    // console.log()
     // compose value prop as object with user object and logout method
     const value = {
       authUser: this.state.authUser,
@@ -89,7 +85,7 @@ class App extends React.Component {
 
     return (
     <AuthContext.Provider value={value}>
-      {!this.state.payment && <Header showSidebar={this.showSidebar} />}
+      {this.props.location.pathname !== '/protected/payment' && <Header showSidebar={this.showSidebar} />}
       <Container fluid>
         <Row className="vheight-100 below-nav ">
           <Switch>
@@ -104,7 +100,7 @@ class App extends React.Component {
             </Route>
             <Route path="/protected" >
              
-              <ProtectedPages isAuthenticated={this.isAuthenticated} hideHeader={this.hideHeader}/>
+              <ProtectedPages isAuthenticated={this.isAuthenticated} />
                    
             </Route>
             <Route path="/login">

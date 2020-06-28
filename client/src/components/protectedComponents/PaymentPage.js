@@ -1,5 +1,5 @@
 import React from 'react' ;
-import {Col,Row,Form,Button,Badge, Alert} from 'react-bootstrap';
+import {Col,Row,Form,Button,Badge, Alert, Modal, Spinner} from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import fetchAPI from '../../api/fetchAPI.js';
 import paymentAPI from '../../api/paymentAPI.js';
@@ -8,8 +8,7 @@ class PaymentPage extends React.Component {
   
   constructor(props) {
     super(props);    
-    this.state = {submitted:false,fullName:"",cardNumber:"",CVVcode:"",error:null};
-    this.props.hideHeader();
+    this.state = {submitted:false,fullName:"",cardNumber:"",CVVcode:"",error:null,show: false,loading:false};
   }
 
   updateField = (name, value) => {
@@ -20,25 +19,30 @@ class PaymentPage extends React.Component {
     event.preventDefault();
     
     try{
+      this.setState({loading:true});
       await paymentAPI.pay({fullName: this.state.fullName,cardNumber: this.state.cardNumber,CVVcode: this.state.CVVcode, price: this.props.desiredRental.price});
       await fetchAPI.addRental(this.props.desiredRental);
-      this.props.hideHeader();
-      this.setState({submitted: true});
+      // this.setState({submitted: true});
+      this.setState({show:true,loading:false}, () =>  setTimeout(this.handleModalClose, 1000))
     }catch(err){
       // handle error
-      if (err.status && err.status === 401){
-        this.props.hideHeader();
+      if (err.status && err.status === 401){      
         this.props.errorAuthHandler(err);
       } else {
+        // other error
         console.log(err);
-        this.setState({error: err.errObj.errors[0] });
+        this.setState({loading:false,error: err.errObj.errors[0] });
       }
     } 
   }
 
   handleClosing = () => {
-    this.props.hideHeader();
     this.setState({submitted: true});
+  }
+
+  
+  handleModalClose = () => {
+    this.setState({show:false,submitted: true});
   }
 
 
@@ -74,13 +78,22 @@ class PaymentPage extends React.Component {
           </Col>
           <Col sm={4}>
             <Row>
-              <Button className="mr-2" variant="primary" type="submit">Pay</Button>
+              <Button className="mr-2" variant="primary" type="submit" disabled={this.state.loading}>
+				        {this.state.loading && <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>}
+				        {!this.state.loading && <span>Pay</span>}</Button>
               <Button variant="secondary" onClick={()=> this.handleClosing()}>Close</Button>
             </Row>            
           </Col>
         </Row>    
     </Form >
     {this.state.error && <Alert className="my-2" variant= "danger">{this.state.error.msg}</Alert>}
+    <Modal show={this.state.show} animation={false} backdrop="static" keyboard={false} aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal.Body>
+        <Row className="justify-content-md-center"><h4>Payment successful!</h4></Row>
+        <Row></Row>
+        <Row className="justify-content-md-center">redirecting...<Spinner className="ml-2 mt-1" as="span" variant="primary" animation="border" size="sm" role="status" aria-hidden="true"/></Row>
+      </Modal.Body>
+    </Modal>
     </>);       
   }
 }

@@ -13,7 +13,7 @@ const cookieParser = require('cookie-parser');
 const authErrorObj = { errors: [{  'param': 'Server', 'msg': 'Authorization error, cookie expired' }] };
 const jwtSecretContent = require('./secrets.js');
 const jwtSecret = jwtSecretContent.jwtSecret;
-const expireTime = 300; //seconds
+const expireTime = 600; //seconds
 
 const BASEURL = '/api' ;
 const app = new express();
@@ -113,10 +113,6 @@ app.get('/api/user', (req,res) => {
          res.status(401).json(authErrorObj);
         }
     );
-    /*
-    if(username) res.json({username: user.username});
-    else res.status(401).json(authErrorObj);
-    */
  });
 
 // GET /vehicles/available?startDate=val1&endDate=val2&category=val3
@@ -159,8 +155,7 @@ app.delete(BASEURL + '/rentals', (req,res) => {
 });
 
 async function getPrice(username,info){
-    
-    
+     
     let lessThan10 = false;
     let frequentCustomer = false;
     let availableVehicles = await vehicleDao.getAvailableVehicles(info.startDate,info.endDate,info.category);
@@ -171,11 +166,11 @@ async function getPrice(username,info){
 
     let rentals = await vehicleDao.getRentalsForUser(username);
 
-    if( rentals.filter( (r) => moment(r.endDate).isBefore(moment())).length >= 3 ){
+    if( rentals.filter( (r) => moment(r.endDate,"YYYY-MM-DD").isBefore(moment())).length >= 3 ){
         frequentCustomer = true;
     }
     
-    let numberOfDay = moment(info.endDate).diff(moment(info.startDate),'days')+1;
+    let numberOfDay = moment(info.endDate,"YYYY-MM-DD").diff(moment(info.startDate,"YYYY-MM-DD"),'days')+1;
     let price = priceCalculator.calculatePrice(lessThan10,numberOfDay,info.category,info.km,info.age,info.extraDrivers,info.extraInsurance,frequentCustomer);
 
     return price.toFixed(2);
@@ -247,9 +242,9 @@ app.post(BASEURL + '/pay', [
         };
         const result = validationResult(req).formatWith(errorFormatter);
         if (!result.isEmpty()) {
-        // Response will contain something like
-        // { errors: [ "body[password]: must be at least 10 chars long" ] }
-        return res.status(422).json({ errors: result.array() });
+            // Response will contain something like
+            // { errors: [ "body[password]: must be at least 10 chars long" ] }
+            return res.status(422).json({ errors: result.array() });
         }
         
         // other payment check
