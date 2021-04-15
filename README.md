@@ -1,7 +1,22 @@
-# Exam #1: "Noleggio veicoli"
-## Student: s280074 GIORGINO LUCA 
+# Car Rental - Web application 1
 
-## React client application routes
+### Instruction to install and run the application
+
+_**Back-end**_
+```
+cd server
+npm install
+npm install -g nodemon
+nodemon
+```
+_**Front-end**_
+```
+cd client
+npm install
+npm start
+```
+## Description of the application
+### React client application routes
 
 - Route `/`: redirect to login or to protected page (if authenticated)
 - Route `/login`: page to handle the login 
@@ -11,7 +26,7 @@
 - Route `/protected/future`:  this page shows future reservations of the logged user
 - Route `/protected/payment`:  in this page user can pay for the desired rental
 
-## REST API server
+### REST API server
 
 - POST `/api/login`
   - request parameters (none) and request body content (username,password)
@@ -52,36 +67,35 @@
   - request parameters (none) and request body content (fullName,CVVcode,cardNumber,price)
   - response body content (empty)
 
-## Server database
-
-- Table `Users` - contains: username(PK), hash
-- Table `Vehicles` - contains: license plate(PK), category, brand, model
-- Table `Rentals` - contains: license plate(PK,FK), start date(PK), end date, user(FK)
-
-## Main React Components
+### Main React Components
   - `App` (in `App.js`): main component to switch between routes('/','/public/vehicles','/protected'). It provides the Context for authentication.
   - `LoginPage` (in `LoginPage.js`): handle the login process
   - `Header` (in `Header.js`): navbar (it changes between public page and protected pages)
-- #### Protected components (user must be authenticated)
+- ##### Protected components (user must be authenticated)
   - `ProtectedPages` (in `ProtectedPages.js`): this component cointains all routes that require autentication and redirect to the right one
   - `PaymentPage` (in `PaymentPage.js`): component to handle the payment
   - `ConfigurationFilter` (in `ConfigurationFilter.js`): configurator component, user can set parameters for desired rental
   - `RentalList` (in `RentalList.js`): list of user's rentals
-- #### Public components
+- ##### Public components
   - `PublicPage` (in `PublicPage.js`): it contains SideFilter and VehicleList
   - `SideFilter` (in `SideFilter.js`): it allows user to filter the vehicle list using checkbox
   - `VehicleList` (in `VehicleList.js`): table of vehicles (user can sort table by category,brand or model)
 
 (only _main_ components, minor ones may be skipped)
 
-## Screenshot
+### Server database
 
-![Configurator Screenshot](./img/screenshot.jpg)
+- Table `Users` - contains: username(PK), hash
+- Table `Vehicles` - contains: license plate(PK), category, brand, model
+- Table `Rentals` - contains: license plate(PK,FK), start date(PK), end date, user(FK)
 
-## Test users
+### Test users
 
 * dev, enter
 * enrico, masala
 * luigi, derussis (frequent customer)
 * luca, giorgino
 * voto, trenta? (frequent customer)
+
+### Main form screenshot
+![Configurator Screenshot](./img/screenshot.jpg)
