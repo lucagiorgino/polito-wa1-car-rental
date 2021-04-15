@@ -97,5 +97,5 @@ npm start
 * luca, giorgino
 * voto, trenta? (frequent customer)
 
-### Main form screenshot
+## Main form screenshot
 ![Configurator Screenshot](./img/screenshot.jpg)
